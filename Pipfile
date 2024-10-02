@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 geocoder = "*"
+pillow = "*"
 
 [dev-packages]
 
