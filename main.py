@@ -6,34 +6,37 @@ import turtle  # Import turtle for graphical representation
 import time
 from PIL import Image  # Import the pillow library to handle image resizing
 
-# URL for the Open Notify API to get information about astronauts on the ISS
-url = "http://api.open-notify.org/astros.json"
 
-# Make a request to the API and read the response
-response = urllib.request.urlopen(url)
+# Function to fetch and save astronaut information
+def fetch_and_save_astronauts_info():
+    # URL for the Open Notify API to get information about astronauts on the ISS
+    url = "http://api.open-notify.org/astros.json"
 
-# Load the JSON data from the response
-result = json.loads(response.read())
+    # Make a request to the API and read the response
+    response = urllib.request.urlopen(url)
 
-# Open a text file to write the ISS information
-with open("iss.txt", "w") as file:
-    # Write the number of astronauts currently on the ISS
-    file.write(f"There are currently {str(result['number'])} astronauts on the ISS: \n\n")
-    
-    # Get the list of people on board the ISS
-    people = result["people"]
-    
-    # Write the names of astronauts currently on the ISS
-    for person in people:
-        file.write(f"{person['name']} - on board \n")
-    
-    # Get the current geographical location (latitude and longitude) of the user's IP address
-    g = geocoder.ip('me')
-    # Write the user's location to the file
-    file.write(f"\n Your current lat / long is: {str(g.latlng)}")
+    # Load the JSON data from the response
+    result = json.loads(response.read())
 
-# Open the text file in the default web browser
-webbrowser.open("iss.txt")
+    # Open a text file to write the ISS information
+    with open("iss.txt", "w") as file:
+        # Write the number of astronauts currently on the ISS
+        file.write(f"There are currently {str(result['number'])} astronauts on the ISS: \n\n")
+        
+        # Get the list of people on board the ISS
+        people = result["people"]
+        
+        # Write the names of astronauts currently on the ISS
+        for person in people:
+            file.write(f"{person['name']} - on board \n")
+        
+        # Get the current geographical location (latitude and longitude) of the user's IP address
+        g = geocoder.ip('me')
+        # Write the user's location to the file
+        file.write(f"\n Your current lat / long is: {str(g.latlng)}")
+
+    # Open the text file in the default web browser
+    webbrowser.open("iss.txt")
 
 # Resize the ISS gif before loading it in turtle
 img = Image.open("images/iss.gif")
@@ -83,6 +86,9 @@ def move_iss():
 
 # Start moving the ISS on the map
 move_iss()
+
+# Main program flow
+fetch_and_save_astronauts_info()
 
 # Keep the turtle window open
 turtle.mainloop()
