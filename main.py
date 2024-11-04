@@ -9,6 +9,7 @@ from PIL import Image  # Import the pillow library to handle image resizing
 
 # Function to fetch and save astronaut information
 def fetch_and_save_astronauts_info():
+    
     # URL for the Open Notify API to get information about astronauts on the ISS
     url = "http://api.open-notify.org/astros.json"
 
@@ -38,57 +39,76 @@ def fetch_and_save_astronauts_info():
     # Open the text file in the default web browser
     webbrowser.open("iss.txt")
 
-# Resize the ISS gif before loading it in turtle
-img = Image.open("images/iss.gif")
-img_resized = img.resize((50, 50))
-img_resized.save("images/iss-resized.gif")
 
-# Setup the world map in turtle module
-screen = turtle.Screen()
-# Set screen size
-screen.setup(1280, 720)
+# Function to resize ISS image
+def resize_iss_image():
+    
+    # Resize the ISS gif before loading it in turtle
+    img = Image.open("images/iss.gif")
+    img_resized = img.resize((50, 50))
+    img_resized.save("images/iss-resized.gif")
 
-# Set the world coordinates to map latitude and longitude to turtle's x and y system
-# Longitude ranges from -180 to 180, Latitude ranges from -90 to 90
-screen.setworldcoordinates(-180, -90, 180, 90)
 
-# Load the world map image
-screen.bgpic("images/map.gif")
-# Register the ISS image and create a turtle object for the ISS
-screen.register_shape("images/iss-resized.gif")
-# Create a new turtle object, which will represent the ISS on the map
-iss = turtle.Turtle()
-# Set the shape of the turtle object to the ISS image
-iss.shape("images/iss-resized.gif")
-# Lift the pen so the turtle moves without drawing a line on the map
-iss.penup()
+# Function to setup the turtle screen
+def setup_screen():
+    
+    # Setup the world map in turtle module
+    screen = turtle.Screen()
+    # Set screen size
+    screen.setup(1280, 720)
+    # Set the world coordinates to map latitude and longitude to turtle's x and y system
+    # Longitude ranges from -180 to 180, Latitude ranges from -90 to 90
+    screen.setworldcoordinates(-180, -90, 180, 90)
+    # Load the world map image
+    screen.bgpic("images/map.gif")
+    # Register the ISS image and create a turtle object for the ISS
+    screen.register_shape("images/iss-resized.gif")
+    return screen
 
-def move_iss():
-    while True:
-        # Load the current status of the ISS in real-time
+
+# Function to initialize the ISS turtle object
+def initialize_iss_turtle():
+    
+    # Create a new turtle object, which will represent the ISS on the map
+    iss = turtle.Turtle()
+    # Set the shape of the turtle object to the ISS image
+    iss.shape("images/iss-resized.gif")
+    # Lift the pen so the turtle moves without drawing a line on the map
+    iss.penup()
+    return iss
+
+
+# Function to update the ISS location on the map
+def update_iss_location(iss):
+        
+    # Load the current status of the ISS in real-time
         url = "http://api.open-notify.org/iss-now.json"
         response = urllib.request.urlopen(url)
         result = json.loads(response.read())
-
         # Extract the ISS location
         location = result["iss_position"]
-
         # Extract the latitude and longitude
         lat = float(location["latitude"])
         lon = float(location["longitude"])
         print(f"Latitude: {lat}, Longitude: {lon}")
-
         # Move the ISS turtle object to the new location
         iss.goto(lon, lat)
+    
 
+# Main function to manage ISS movement
+def move_iss():
+    while True:
+        update_iss_location(iss)
         # Refresh each 5 seconds
         time.sleep(5)
 
-# Start moving the ISS on the map
-move_iss()
 
 # Main program flow
 fetch_and_save_astronauts_info()
+resize_iss_image()
+screen = setup_screen()
+iss = initialize_iss_turtle()
+move_iss()
 
 # Keep the turtle window open
 turtle.mainloop()
