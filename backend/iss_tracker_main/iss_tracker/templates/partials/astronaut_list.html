@@ -1,0 +1,8 @@
+<h2>Current Astronauts on ISS</h2>
+<ul>
+    {% for astronaut in astronauts %}
+        <li>{{ astronaut.name }} - {{ astronaut.craft }}</li>
+    {% empty %}
+        <li>No astronauts found</li>
+    {% endfor %}
+</ul>
